@@ -1,0 +1,95 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}Главная - Фандом Рубеж Шангрила{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1 class="display-4"><i class="bi bi-stars"></i> Добро пожаловать в фандом!</h1>
+    <p class="lead">Сообщество поклонников аниме "Рубеж Шангрила"</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg mt-3">Присоединиться</a>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-card-text"></i> Последние посты</h5>
+                {% if posts %}
+                    {% for post in posts %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6><a href="{% url 'post_detail' pk=post.pk %}" class="text-decoration-none">{{ post.title }}</a></h6>
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ post.author.username }} | 
+                                <i class="bi bi-heart"></i> {{ post.total_likes }} |
+                                <i class="bi bi-clock"></i> {{ post.created_at|date:"d.m.Y" }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                    <a href="{% url 'post_list' %}" class="btn btn-outline-primary btn-sm">Все посты</a>
+                {% else %}
+                    <p class="text-muted">Пока нет постов</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-chat-dots"></i> Активные обсуждения</h5>
+                {% if discussions %}
+                    {% for discussion in discussions %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6><a href="{% url 'discussion_detail' pk=discussion.pk %}" class="text-decoration-none">{{ discussion.title }}</a></h6>
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ discussion.author.username }} | 
+                                <i class="bi bi-eye"></i> {{ discussion.views }} |
+                                <i class="bi bi-clock"></i> {{ discussion.created_at|date:"d.m.Y" }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                    <a href="{% url 'discussion_list' %}" class="btn btn-outline-primary btn-sm">Все обсуждения</a>
+                {% else %}
+                    <p class="text-muted">Пока нет обсуждений</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-book"></i> Новые фанфики</h5>
+                {% if fanfics %}
+                    {% for fanfic in fanfics %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6><a href="{% url 'fanfic_detail' pk=fanfic.pk %}" class="text-decoration-none">{{ fanfic.title }}</a></h6>
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ fanfic.author.username }} | 
+                                <i class="bi bi-heart"></i> {{ fanfic.total_likes }} |
+                                <span class="badge bg-secondary">{{ fanfic.get_genre_display_short }}</span>
+                            </small>
+                        </div>
+                    {% endfor %}
+                    <a href="{% url 'fanfic_list' %}" class="btn btn-outline-primary btn-sm">Все фанфики</a>
+                {% else %}
+                    <p class="text-muted">Пока нет фанфиков</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <a href="{% url 'post_create' %}" class="btn btn-primary me-2"><i class="bi bi-plus-circle"></i> Создать пост</a>
+        <a href="{% url 'discussion_create' %}" class="btn btn-primary me-2"><i class="bi bi-plus-circle"></i> Создать обсуждение</a>
+        <a href="{% url 'fanfic_create' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Создать фанфик</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

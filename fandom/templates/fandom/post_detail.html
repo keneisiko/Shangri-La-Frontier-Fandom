@@ -1,0 +1,51 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'post_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Назад к постам</a>
+</div>
+
+<div class="card">
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 400px; object-fit: cover;">
+    {% endif %}
+    <div class="card-body">
+        <h1 class="card-title">{{ post.title }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a href="{% url 'profile' username=post.author.username %}" class="text-decoration-none">
+                    <i class="bi bi-person"></i> {{ post.author.username }}
+                </a>
+                <span class="text-muted ms-2">
+                    <i class="bi bi-clock"></i> {{ post.created_at|date:"d.m.Y H:i" }}
+                </span>
+            </div>
+            {% if user == post.author %}
+                <div>
+                    <a href="{% url 'post_edit' pk=post.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Редактировать</a>
+                    <a href="{% url 'post_delete' pk=post.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Удалить</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-text" style="white-space: pre-wrap;">{{ post.content }}</div>
+        <div class="mt-4">
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'post_like' pk=post.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger like-btn {% if is_liked %}liked{% endif %}">
+                        <i class="bi bi-heart{% if is_liked %}-fill{% endif %}"></i> 
+                        {{ post.total_likes }}
+                    </button>
+                </form>
+            {% else %}
+                <span class="badge bg-primary">
+                    <i class="bi bi-heart"></i> {{ post.total_likes }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

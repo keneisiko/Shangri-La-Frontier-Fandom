@@ -1,0 +1,109 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}Профиль {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <i class="bi bi-person-circle" style="font-size: 150px; color: #6c5ce7;"></i>
+                {% endif %}
+                <h3>{{ profile_user.get_full_name|default:profile_user.username }}</h3>
+                <p class="text-muted">@{{ profile_user.username }}</p>
+                {% if profile.bio %}
+                    <p>{{ profile.bio }}</p>
+                {% endif %}
+                {% if profile.favorite_character %}
+                    <p><strong>Любимый персонаж:</strong> {{ profile.favorite_character }}</p>
+                {% endif %}
+                {% if user == profile_user %}
+                    <a href="{% url 'profile_edit' %}" class="btn btn-primary"><i class="bi bi-pencil"></i> Редактировать профиль</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#posts">Посты ({{ posts.count }})</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#discussions">Обсуждения ({{ discussions.count }})</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#fanfics">Фанфики ({{ fanfics.count }})</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="posts">
+                {% if posts %}
+                    {% for post in posts %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5><a href="{% url 'post_detail' pk=post.pk %}" class="text-decoration-none">{{ post.title }}</a></h5>
+                                <p>{{ post.content|truncatewords:30 }}</p>
+                                <small class="text-muted">
+                                    <i class="bi bi-heart"></i> {{ post.total_likes }} | 
+                                    <i class="bi bi-clock"></i> {{ post.created_at|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">Нет постов</div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="discussions">
+                {% if discussions %}
+                    {% for discussion in discussions %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5><a href="{% url 'discussion_detail' pk=discussion.pk %}" class="text-decoration-none">{{ discussion.title }}</a></h5>
+                                <p>{{ discussion.content|truncatewords:30 }}</p>
+                                <small class="text-muted">
+                                    <i class="bi bi-eye"></i> {{ discussion.views }} | 
+                                    <i class="bi bi-chat"></i> {{ discussion.comments.count }} | 
+                                    <i class="bi bi-clock"></i> {{ discussion.created_at|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">Нет обсуждений</div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="fanfics">
+                {% if fanfics %}
+                    {% for fanfic in fanfics %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5><a href="{% url 'fanfic_detail' pk=fanfic.pk %}" class="text-decoration-none">{{ fanfic.title }}</a></h5>
+                                <p>{{ fanfic.description|truncatewords:30 }}</p>
+                                <div class="mb-2">
+                                    <span class="badge bg-primary">{{ fanfic.get_genre_display_short }}</span>
+                                    <span class="badge bg-warning text-dark">{{ fanfic.get_rating_display_short }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="bi bi-heart"></i> {{ fanfic.total_likes }} | 
+                                    <i class="bi bi-eye"></i> {{ fanfic.views }} | 
+                                    <i class="bi bi-clock"></i> {{ fanfic.created_at|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">Нет фанфиков</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

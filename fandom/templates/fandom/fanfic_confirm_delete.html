@@ -1,0 +1,24 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}Удалить фанфик{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Удалить фанфик?</h2>
+                <p>Вы уверены, что хотите удалить фанфик "{{ fanfic.title }}"?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Да, удалить</button>
+                        <a href="{% url 'fanfic_detail' pk=fanfic.pk %}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

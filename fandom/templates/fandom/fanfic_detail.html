@@ -1,0 +1,76 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}{{ fanfic.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'fanfic_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Назад к фанфикам</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        {% if fanfic.cover %}
+            <img src="{{ fanfic.cover.url }}" class="img-fluid rounded" alt="{{ fanfic.title }}">
+        {% endif %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6>Информация</h6>
+                <p class="mb-2">
+                    <strong>Автор:</strong><br>
+                    <a href="{% url 'profile' username=fanfic.author.username %}">{{ fanfic.author.username }}</a>
+                </p>
+                <p class="mb-2">
+                    <strong>Жанр:</strong><br>
+                    <span class="badge bg-primary">{{ fanfic.get_genre_display_short }}</span>
+                </p>
+                <p class="mb-2">
+                    <strong>Рейтинг:</strong><br>
+                    <span class="badge bg-warning text-dark">{{ fanfic.get_rating_display_short }}</span>
+                </p>
+                <p class="mb-2">
+                    <strong>Создан:</strong><br>
+                    {{ fanfic.created_at|date:"d.m.Y" }}
+                </p>
+                <p class="mb-2">
+                    <strong>Просмотры:</strong><br>
+                    <i class="bi bi-eye"></i> {{ fanfic.views }}
+                </p>
+                {% if user == fanfic.author %}
+                    <div class="mt-3">
+                        <a href="{% url 'fanfic_edit' pk=fanfic.pk %}" class="btn btn-sm btn-outline-primary w-100"><i class="bi bi-pencil"></i> Редактировать</a>
+                        <a href="{% url 'fanfic_delete' pk=fanfic.pk %}" class="btn btn-sm btn-outline-danger w-100 mt-2"><i class="bi bi-trash"></i> Удалить</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">{{ fanfic.title }}</h1>
+                <div class="mb-3">
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'fanfic_like' pk=fanfic.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger like-btn {% if is_liked %}liked{% endif %}">
+                                <i class="bi bi-heart{% if is_liked %}-fill{% endif %}"></i> 
+                                {{ fanfic.total_likes }}
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="badge bg-danger">
+                            <i class="bi bi-heart"></i> {{ fanfic.total_likes }}
+                        </span>
+                    {% endif %}
+                </div>
+                <h5>Описание</h5>
+                <p class="text-muted">{{ fanfic.description }}</p>
+                <hr>
+                <h5>Содержание</h5>
+                <div style="white-space: pre-wrap; line-height: 1.8;">{{ fanfic.content }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

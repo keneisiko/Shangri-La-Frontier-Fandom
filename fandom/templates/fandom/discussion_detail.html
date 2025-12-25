@@ -1,0 +1,79 @@
+{% extends 'fandom/base.html' %}
+
+{% block title %}{{ discussion.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'discussion_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Назад к обсуждениям</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h1 class="card-title">{{ discussion.title }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a href="{% url 'profile' username=discussion.author.username %}" class="text-decoration-none">
+                    <i class="bi bi-person"></i> {{ discussion.author.username }}
+                </a>
+                <span class="text-muted ms-2">
+                    <i class="bi bi-clock"></i> {{ discussion.created_at|date:"d.m.Y H:i" }}
+                </span>
+                <span class="badge bg-info ms-2">
+                    <i class="bi bi-eye"></i> {{ discussion.views }}
+                </span>
+            </div>
+            {% if user == discussion.author %}
+                <div>
+                    <a href="{% url 'discussion_edit' pk=discussion.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Редактировать</a>
+                    <a href="{% url 'discussion_delete' pk=discussion.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Удалить</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-text" style="white-space: pre-wrap;">{{ discussion.content }}</div>
+    </div>
+</div>
+
+<h3 class="mb-3"><i class="bi bi-chat"></i> Комментарии ({{ comments.count }})</h3>
+
+{% if user.is_authenticated %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Добавить комментарий</h5>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.content }}
+                <button type="submit" class="btn btn-primary mt-2">Отправить</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий
+    </div>
+{% endif %}
+
+<div class="comments">
+    {% for comment in comments %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">
+                            <a href="{% url 'profile' username=comment.author.username %}" class="text-decoration-none">
+                                <i class="bi bi-person"></i> {{ comment.author.username }}
+                            </a>
+                        </h6>
+                        <p class="card-text">{{ comment.content }}</p>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> {{ comment.created_at|date:"d.m.Y H:i" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">Пока нет комментариев. Будьте первым!</div>
+    {% endfor %}
+</div>
+{% endblock %}
+
