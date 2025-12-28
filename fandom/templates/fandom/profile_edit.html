@@ -1,6 +1,13 @@
 {% extends 'fandom/base.html' %}
+{% load static %}
 
 {% block title %}Редактировать профиль{% endblock %}
+
+{% block extra_css %}
+body {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('{% static 'images/profile.webp' %}') no-repeat center center / cover fixed !important;
+}
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">

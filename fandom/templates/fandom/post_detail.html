@@ -1,6 +1,14 @@
 {% extends 'fandom/base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+body {
+    background: url('{% static 'images/detail.webp' %}') no-repeat center center / cover fixed;
+    background-size: cover;
+}
+{% endblock %}
 
 {% block content %}
 <div class="mb-4">

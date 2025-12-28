@@ -2,6 +2,12 @@
 
 {% block title %}{{ fanfic.title }}{% endblock %}
 
+{% block extra_css %}
+.main-content {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('{% static 'images/detail.webp' %}') no-repeat center center / cover !important;
+}
+{% endblock %}
+
 {% block content %}
 <div class="mb-4">
     <a href="{% url 'fanfic_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Назад к фанфикам</a>

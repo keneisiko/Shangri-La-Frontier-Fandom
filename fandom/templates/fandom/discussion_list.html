@@ -1,6 +1,15 @@
 {% extends 'fandom/base.html' %}
+{% load static %}
 
 {% block title %}Обсуждения{% endblock %}
+
+{% block extra_css %}
+body {
+    background: url('{% static 'images/detail.webp' %}') no-repeat center center / cover fixed;
+    background-size: cover;
+    background-attachment: fixed;
+}
+{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
