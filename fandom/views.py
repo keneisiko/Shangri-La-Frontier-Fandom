@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -10,6 +10,13 @@ from .forms import (
     CustomUserCreationForm, ProfileForm, PostForm,
     DiscussionForm, CommentForm, FanficForm
 )
+
+
+def logout_view(request):
+    """Выход из системы"""
+    logout(request)
+    messages.success(request, 'Вы успешно вышли из системы.')
+    return redirect('home')
 
 
 def home(request):
